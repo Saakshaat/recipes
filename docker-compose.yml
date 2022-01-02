@@ -1,2 +1,35 @@
-version: '3.0'
-  
+version: '3.7'
+
+services:
+  database:
+    image: postgres:11
+    environment:
+      - POSTGRES_USER=postgresUser
+      - POSTGRES_PASSWORD=postgres_pass_1234@!@#
+      - POSTGRES_DB=postgresdb
+    volumes:
+    - database-data:/var/lib/postgresql/data/
+    expose:
+    - "5432"
+    networks:
+      - db-network
+
+  main-service:
+    build:
+      context: typegraph-server
+      dockerfile: Dockerfile
+    command: npm run start
+    ports: 
+      - 4000:4000
+    environment:
+      - PORT=4000
+    depends_on:
+      - database
+    networks:
+      - db-network
+    
+networks:
+  db-network:
+
+volumes: 
+  database-data:
