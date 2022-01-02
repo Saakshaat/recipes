@@ -1,4 +1,4 @@
-import { Entity, BaseEntity, PrimaryGeneratedColumn, Column } from "typeorm";
+import { Entity, BaseEntity, PrimaryGeneratedColumn, Column, TreeRepository } from "typeorm";
 import { ObjectType, Field, ID } from "type-graphql";
 
 @Entity()
@@ -18,8 +18,13 @@ export class Recipe extends BaseEntity {
 
   @Field(() => String, { nullable: true })
   @Column({ nullable: true })
-  link: string; // TODO: change type to URL
+  link?: string; // TODO: change type to URL
 
-  // TODO: add [String] field for ingredients
-  // TODO: add [String] field for Steps
+  @Field(() => [String], {defaultValue: []})
+  @Column("text", {array: true, default: []})
+  ingredients?: string[]
+
+  @Field(() => [String], {defaultValue: []})
+  @Column("text", {array: true, default: []})
+  steps?: string[]
 }
