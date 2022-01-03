@@ -1,6 +1,7 @@
 import { Resolver, Query, Mutation, Arg } from "type-graphql";
 import { Recipe } from "../models/recipe";
 import { CreateRecipe, UpdateRecipe } from "../schemas/recipe";
+import { Like } from "typeorm";
 
 @Resolver()
 export class RecipeResolver {
@@ -16,8 +17,16 @@ export class RecipeResolver {
 
   @Query(() => [Recipe])
   recipeByName(@Arg("name") name: string) {
-    return Recipe.find({ where: { name } });
+    return Recipe.find({ name: Like(`%${name}`) });
   }
+
+  // @Query(() => [Recipe])
+  // recipeByIngredients(@Arg('ingredients', type => [String]) ingredients: string[]) {
+  //   return Recipe.getRepository()
+  //     .createQueryBuilder()
+  //     .where(":ingredients = ANY(:...ingredients)", { ingredients })
+  //     .getMany();
+  // }
 
   @Mutation(() => Recipe)
   async createRecipe(@Arg("data") data: CreateRecipe) {
