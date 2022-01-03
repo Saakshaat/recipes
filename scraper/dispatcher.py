@@ -15,7 +15,12 @@ def scrape_web(url: str, **kwargs):
     steps = list(
         map(
             lambda line: line.replace("\n", ""),
-            list(filter(lambda line: line, scraped_data.instructions().split("."))),
+            list(
+                filter(
+                    lambda line: line,
+                    scraped_data.instructions().split("."),
+                )
+            ),
         )
     )
 
@@ -33,12 +38,19 @@ def scrape_web(url: str, **kwargs):
 
 @Request.application
 def application(request):
-    # Dispatcher is dictionary {<method_name>: callable}
     dispatcher["scrape webpage"] = scrape_web
 
-    response = JSONRPCResponseManager.handle(request.data, dispatcher)
-    return Response(response.json, mimetype="application/json")
+    response = JSONRPCResponseManager.handle(
+        request.data, dispatcher
+    )
+    return Response(
+        response.json, mimetype="application/json"
+    )
 
 
 if __name__ == "__main__":
-    run_simple("localhost", os.environ.get('PORT', 578), application)
+    run_simple(
+        "localhost",
+        int(os.environ.get("PORT", 578)),
+        application,
+    )
